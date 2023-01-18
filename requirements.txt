@@ -12,3 +12,4 @@ celery[redis]
 loguru
 coverage
 model_bakery
+django-robokassa
