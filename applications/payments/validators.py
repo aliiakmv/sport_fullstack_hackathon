@@ -13,6 +13,7 @@ class CCNumberValidator:
             raise ValidationError('Enter a valid credit card number', code='invalid')
 
 
+@deconstructible
 class ExpiryDateValidator:
     def __call__(self, value, *args, **kwargs):
         expiry_date = utils.expire_date(value.year, value.month)

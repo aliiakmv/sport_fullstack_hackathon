@@ -7,7 +7,7 @@ from applications.payments.validators import CCNumberValidator
 
 class CustomerSerializer(serializers.ModelSerializer):
     user = serializers.EmailField(required=False)
-    card_number = serializers.CharField(max_length=19, min_length=12, default_validators = [CCNumberValidator()])
+    card_number = serializers.CharField(max_length=19, min_length=12, validators=[CCNumberValidator()])
 
     class Meta:
         model = Customer
