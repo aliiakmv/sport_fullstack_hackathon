@@ -1,11 +1,7 @@
 from pathlib import Path
-
 import dj_database_url
-
 from datetime import timedelta
-
 from decouple import config
-
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -14,7 +10,6 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=True)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS').split(',')
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -28,6 +23,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'drf_yasg',
+    'rest_framework_simplejwt',
+
+    'account',
+    'map'
 
 ]
 
@@ -61,11 +60,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-
 DATABASES = {
     'default': dj_database_url.config(default=config('DATABASE_URL'))
 }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -82,7 +79,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -91,11 +87,23 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 STATIC_URL = 'static/'
 
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'account.User'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication']
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {
@@ -106,3 +114,10 @@ SWAGGER_SETTINGS = {
         }
     }
 }
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=600),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1), }
+
+BROKER_URL = 'redis://127.0.0.1:6379/0'
+BROKER_TRANSPORT = 'redis'
