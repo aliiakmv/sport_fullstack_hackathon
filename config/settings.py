@@ -28,10 +28,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'drf_yasg',
-    'robokassa',
 
     # apps
-    'applications.accounts',
+    'applications.account',
     'applications.sports_activities',
     'applications.payments',
 ]
@@ -104,6 +103,8 @@ MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'account.User'
 
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {

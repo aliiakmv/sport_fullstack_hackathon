@@ -1,3 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from applications.sports_activities.models import SportsActivity, Trainer
+
+admin.site.register(SportsActivity)
+admin.site.register(Trainer)
