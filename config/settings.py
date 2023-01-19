@@ -28,12 +28,14 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'drf_yasg',
+    'phonenumber_field',
 
     # apps
     'applications.account',
-    'applications.sports_activities',
+    'applications.section',
     'applications.map',
     'applications.payments',
+    'applications.feedback'
 ]
 
 MIDDLEWARE = [
@@ -103,30 +105,32 @@ STATIC_ROOT = BASE_DIR / 'static/'
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media/'
 
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'account.User'
+
 
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {
         'api_key': {
             'type': 'apiKey',
             'in': 'header',
-            'name': 'Authorization'
+            'name': 'Authorization',
         }
     }
 }
 
 
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-]
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-]
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=600),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1), }
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -138,3 +142,43 @@ EMAIL_USE_TLS = True
 
 BROKER_URL = 'redis://127.0.0.1:6379/0'
 BROKER_TRANSPORT = 'redis'
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+
+    'formatters': {
+        'main': {
+            'format': '{levelname} -- {asctime} -- {module} -- {message}',
+            'style': '{'
+        }
+    },
+
+    'handlers': {
+        'my_console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'main'
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': 'info.log',
+            'formatter': 'main'
+        },
+    },
+
+    'loggers': {
+        'main': {
+            'level': 'INFO',
+            'handlers': ['my_console', 'file']
+        },
+    }
+}
+
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': BASE_DIR / 'cache/',
+    }
+}

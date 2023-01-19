@@ -12,3 +12,6 @@ celery[redis]
 loguru
 coverage
 model_bakery
+django-phone-number-field[phonenumberslite]
+django-cors-headers
+pyngrok

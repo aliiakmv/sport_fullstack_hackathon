@@ -7,5 +7,5 @@ class IsSubscriptionOwner(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         if request.method in ['PUT', 'PATCH']:
-            return request.user.is_authenticated and request.user == obj.student
+            return request.user.is_authenticated and request.user == obj.customer
         return request.user.is_authenticated and (request.user == obj.customer or request.user.is_staff)

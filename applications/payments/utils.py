@@ -12,13 +12,14 @@ def get_digits(value):
 
 
 def luhn(number) -> bool:
-    """Валидитрует кредитные карты по Luhn's Algorithm"""
+    """Валидирует кредитные карты по Luhn's Algorithm"""
     try:
         evens = sum(int(x) for x in str(number)[-1::-2])
         odds = sum(LUHN_ODD_LOOKUP[int(x)] for x in str(number)[-2::-2])
         return (evens+odds) % 10 == 0
     except ValueError:
         return False
+
 
 def expire_date(year, month):
     """Возвращает последний день месяца"""

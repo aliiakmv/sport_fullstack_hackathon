@@ -1,5 +1,4 @@
 from django.core.mail import send_mail
-from loguru import logger
 
 from config.celery import app
 
@@ -12,5 +11,5 @@ def send_subscription_key_email(email, money, subscription_key):
         'Get a subscription key',
         full_msg,
         'aliyakomanovaa@gmail.com',
-        [email]
+        [email],
     )

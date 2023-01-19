@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class SportsActivitiesConfig(AppConfig):
+class SectionConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'applications.sports_activities'
+    name = 'applications.section'
