@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     # apps
     'applications.account',
     'applications.sports_activities',
+    'applications.map',
     'applications.payments',
 ]
 
