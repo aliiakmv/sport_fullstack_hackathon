@@ -1,7 +1,7 @@
 from django.db.models import Avg
 from rest_framework import serializers
 
-from applications.section.models import Category, Section, Image, Poster
+from applications.section.models import Category, Section, Image, Poster, ParsingGym
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -48,4 +48,11 @@ class PosterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Poster
+        fields = '__all__'
+
+
+class ParsingGymSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ParsingGym
         fields = '__all__'

@@ -15,3 +15,8 @@ model_bakery
 django-phone-number-field[phonenumberslite]
 django-cors-headers
 pyngrok
+beautifulsoup4
+lxml
+selenium
+webdriver_manager
+fake-useragent

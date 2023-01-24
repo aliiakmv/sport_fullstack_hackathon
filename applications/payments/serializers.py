@@ -15,22 +15,10 @@ class CustomerSerializer(serializers.ModelSerializer):
         model = Customer
         fields = '__all__'
 
-    @staticmethod
-    def validate_card_balance(attrs):
-        card_balance = attrs['card_balance']
-        subscription_price = Customer.subscriptions.final_price
-        card_balance -= subscription_price
-        return attrs
-
-    def create(self, validated_data):
-        customer = Customer.objects.create(**validated_data)
-        return customer
-
 
 class SubscriptionSerializer(serializers.ModelSerializer):
-    customer = serializers.CharField(required=False)
+    customer = serializers.EmailField(required=False)
     final_price = serializers.IntegerField(required=False)
-    expiration_date = serializers.DateField(required=False)
 
     class Meta:
         model = Subscription
@@ -45,9 +33,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def create(validated_data):
-        classes = validated_data['classes']
-
         subscription = Subscription.objects.create(**validated_data)
-        send_subscription_key_email.delay(email=subscription.customer.email, money=classes.price,
-                                          subscription_key=Subscription.subscription_key)
+        send_subscription_key_email.delay(email=subscription.customer.email, money=subscription.classes.price,
+                                          subscription_key=subscription.subscription_key)
         return subscription

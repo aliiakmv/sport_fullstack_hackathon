@@ -32,3 +32,9 @@ class Image(models.Model):
 class Poster(models.Model):
     image = models.ImageField(upload_to='poster/')
 
+
+class ParsingGym(models.Model):
+    title = models.CharField(max_length=180)
+    address = models.TextField()
+    coordinates = models.TextField()
+    image = models.ImageField(upload_to='images/')

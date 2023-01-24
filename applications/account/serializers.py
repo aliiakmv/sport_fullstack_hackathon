@@ -29,10 +29,17 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 
+class ActivationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = 'all'
+
+
 class ChangePasswordSerializer(serializers.Serializer):
-    old_password = serializers.CharField(required=True)
-    new_password = serializers.CharField(required=True, min_length=6)
-    new_password_confirm = serializers.CharField(required=True, min_length=6)
+    old_password = serializers.CharField(required=True, write_only=True)
+    new_password = serializers.CharField(required=True, min_length=6, write_only=True)
+    new_password_confirm = serializers.CharField(required=True, min_length=6, write_only=True)
 
     def validate(self, attrs):
         p1 = attrs.get('new_password')
@@ -42,17 +49,17 @@ class ChangePasswordSerializer(serializers.Serializer):
         return attrs
 
     def validate_old_password(self, attrs):
-        request = self.context.get('request')
-        user = request.user
+        user = self.context.get('request').user
         if not user.check_password(attrs):
             raise serializers.ValidationError('Wrong old password')
         return attrs
 
-    def set_new_password(self):
+    def create(self, validated_data):
         user = self.context.get('request').user
         password = self.validated_data.get('new_password')
         user.set_password(password)
         user.save()
+        return user
 
 
 class ForgotPasswordSerializer(serializers.Serializer):
@@ -63,19 +70,20 @@ class ForgotPasswordSerializer(serializers.Serializer):
             raise serializers.ValidationError('This user is not found in our database')
         return email
 
-    def send_code(self):
+    def create(self, validated_data):
         email = self.validated_data.get('email')
         user = User.objects.get(email=email)
         user.create_activation_code()
         user.save()
         send_confirmation_code(email, user.activation_code)
+        return user
 
 
 class ForgotPasswordCompleteSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
-    code = serializers.CharField(required=True)
-    password = serializers.CharField(required=True, min_length=6)
-    password_confirm = serializers.CharField(required=True, min_length=6)
+    code = serializers.CharField(required=True, write_only=True)
+    password = serializers.CharField(required=True, min_length=6, write_only=True)
+    password_confirm = serializers.CharField(required=True, min_length=6, write_only=True)
 
     def validate_email(self, email):
         if not User.objects.filter(email=email).exists():
@@ -95,10 +103,11 @@ class ForgotPasswordCompleteSerializer(serializers.Serializer):
             raise serializers.ValidationError('Passwords do not match, please try again')
         return attrs
 
-    def set_new_password(self):
+    def create(self, validated_data):
         email = self.validated_data.get('email')
         password = self.validated_data.get('password')
         user = User.objects.get(email=email)
         user.set_password(password)
         user.activation_code = ''
         user.save()
+        return user

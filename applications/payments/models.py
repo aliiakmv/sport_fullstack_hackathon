@@ -41,7 +41,8 @@ class Subscription(models.Model):
     start_date = models.DateTimeField(auto_now_add=True)
     type = models.CharField(CHOICE, max_length=50)
     discount = models.PositiveIntegerField(default=20)
-    final_price = models.PositiveIntegerField()
+    final_price = models.DecimalField(decimal_places=2, max_digits=10)
+    is_paid = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         self.final_price = float(self.classes.price) * (1 - (self.discount / 100))

@@ -1,16 +1,19 @@
 from django.core.exceptions import MultipleObjectsReturned
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from rest_framework import mixins, status
-from rest_framework.generics import ListAPIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
 from applications.feedback.models import Rating, Like
 from applications.feedback.serializers import RatingSerializer
-from applications.section.models import Section, Poster
+from applications.section.models import Section, Poster, Category, ParsingGym
 from applications.section.permission import IsOwner
-from applications.section.serializers import SectionSerializer, PosterSerializer
+from applications.section.serializers import SectionSerializer, PosterSerializer, CategorySerializer, \
+    ParsingGymSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.decorators import action
@@ -25,6 +28,7 @@ class LargeResultsSetPagination(PageNumberPagination):
     max_page_size = 10000
 
 
+@method_decorator(cache_page(60), name='dispatch')
 class SectionAPIView(ModelViewSet):
     logger.info('section')
     queryset = Section.objects.all()
@@ -67,3 +71,21 @@ class PosterAPIView(ModelViewSet):
     queryset = Poster.objects.all()
     serializer_class = PosterSerializer
     permission_classes = [IsAdminUser]
+
+
+class CategoryViewSet(mixins.CreateModelMixin,
+                   mixins.RetrieveModelMixin,
+                   mixins.ListModelMixin,
+                   GenericViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+
+class ParsingGymAPIView(APIView):
+    @staticmethod
+    def get(request):
+        gyms = ParsingGym.objects.all()
+        serializer_class = ParsingGymSerializer(gyms, many=True)
+        return Response(serializer_class.data, status=status.HTTP_200_OK)
+
+

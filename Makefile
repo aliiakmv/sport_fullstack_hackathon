@@ -5,3 +5,5 @@ migrate:
 	python3 manage.py migrate
 user:
 	python3 manage.py createsuperuser
+test:
+	python3 manage.py test applications
