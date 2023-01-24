@@ -48,21 +48,24 @@ def get_data(soup):
     sport_list = soup.find_all('div', class_='Nv2PK')
     data = []
     for sport in sport_list[9]:
-        # title = sport.find('div', class_='qBF1Pd fontHeadlineSmall').find('span').text.strip()
-        image = sport.find('div', class_='FQ2IWe p0Hhde').find('img').get('src')
-        text = sport.text.split()
-        text = ' '.join([i for i in text if i])
-        text = text.split('·')
-        title = text[0]
-        address = text[2]
-        # data.append(title + address + image)
-        # Section.objects.create(title=title, address=address, category='Gem')
-        g = geocoder.mapbox(address,
-                            key='pk.eyJ1IjoiYW1vbnlhIiwiYSI6ImNsZDFkZmtibDBiZXczbm1wMWNmaXNtNDgifQ.zdiIZ8oySKdSFYwcpPs-uQ')
-        g = g.latlng
-        coordinate_lat = g[0]
-        coordinate_long = g[1]
-        data.append(title + address + coordinate_long + coordinate_lat + image)
+        try:
+            image = sport.find('div', class_='FQ2IWe p0Hhde').find('img').get('src')
+        except AttributeError:
+            image = ''
+        try:
+            text = sport.text.split()
+            text = ' '.join([i for i in text if i])
+            text = text.split('·')
+            title = text[0]
+            address = text[2]
+            g = geocoder.mapbox(address,
+                                key='pk.eyJ1IjoiYW1vbnlhIiwiYSI6ImNsZDFkZmtibDBiZXczbm1wMWNmaXNtNDgifQ.zdiIZ8oySKdSFYwcpPs-uQ')
+            g = g.latlng
+            coordinate_lat = g[0]
+            coordinate_long = g[1]
+        except AttributeError:
+
+            data.append(title + address + coordinate_long + coordinate_lat + image)
 
 
 def main():
