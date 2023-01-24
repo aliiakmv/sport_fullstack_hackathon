@@ -7,9 +7,8 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup as Bs
-from decouple import config
 
-from map.models import Section
+from map.models import ParsingGym
 
 options = webdriver.ChromeOptions()
 ua = UserAgent()
@@ -41,13 +40,10 @@ def get_soup(html):
     return soup
 
 
-exc = ['открыто', 'закрыто', 'проложить маршрут']
-
-
 def get_data(soup):
     sport_list = soup.find_all('div', class_='Nv2PK')
     data = []
-    for sport in sport_list[9]:
+    for sport in sport_list[:20]:
         try:
             image = sport.find('div', class_='FQ2IWe p0Hhde').find('img').get('src')
         except AttributeError:
@@ -58,25 +54,19 @@ def get_data(soup):
             text = text.split('·')
             title = text[0]
             address = text[2]
+        except AttributeError:
+            title = ''
+            address = ''
+        try:
             g = geocoder.mapbox(address,
                                 key='pk.eyJ1IjoiYW1vbnlhIiwiYSI6ImNsZDFkZmtibDBiZXczbm1wMWNmaXNtNDgifQ.zdiIZ8oySKdSFYwcpPs-uQ')
             g = g.latlng
             coordinate_lat = g[0]
             coordinate_long = g[1]
         except AttributeError:
-
-            data.append(title + address + coordinate_long + coordinate_lat + image)
-
-
-def main():
-    html = get_courses(url=config('TOKEN'))
-    soup = get_soup(html)
-    get_data(soup)
-
-
-#
-# # bot.send_mail(chat_id, data)
-#
-#
-if __name__ == '__main__':
-    main()
+            coordinate_lat = ''
+            coordinate_long = ''
+        data.append(
+            ParsingGym(title=title, address=address, coordinate_lat=coordinate_lat, coordinate_long=coordinate_long,
+                       image=image))
+    return

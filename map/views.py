@@ -11,9 +11,9 @@ from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
 from feedback.models import Rating, Like
 from feedback.serializers import RatingSerializer
-from .models import Section, Poster
+from .models import Section, Poster, ParsingGym
 from .permission import IsOwner
-from .serializers import SectionSerializer, PosterSerializer
+from .serializers import SectionSerializer, PosterSerializer, ParsingGymSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.decorators import action
@@ -70,3 +70,12 @@ class PosterAPIView(ModelViewSet):
     queryset = Poster.objects.all()
     serializer_class = PosterSerializer
     permission_classes = [IsAdminUser]
+
+
+class ParsingGymAPIView(ListAPIView):
+    @staticmethod
+    def get(request):
+        gyms = ParsingGym.objects.all()
+        serializer_class = ParsingGymSerializer(gyms, many=True)
+        return Response(serializer_class.data, status=status.HTTP_200_OK)
+

@@ -4,7 +4,6 @@ from decouple import config
 
 from django.contrib.auth import get_user_model
 
-# from map.parsing import get_courses, get_soup, get_data
 
 User = get_user_model()
 
@@ -29,17 +28,20 @@ class Section(models.Model):
     def __str__(self):
         return f'Section: {self.title} Category: {self.category}'
 
-    # def create(self, *args, **kwargs):
-    #     html = get_courses(url=config('URL'))
-    #     soup = get_soup(html)
-    #     get_data(soup)
-
     def save(self, *args, **kwargs):
         g = geocoder.mapbox(self.address, key=config('TOKEN'))
         g = g.latlng
         self.coordinate_lat = g[0]
         self.coordinate_long = g[1]
         return super(Section, self).save(*args, **kwargs)
+
+
+class ParsingGym(models.Model):
+    title = models.CharField(max_length=180)
+    address = models.TextField()
+    coordinate_lat = models.FloatField(blank=True, null=True)
+    coordinate_long = models.FloatField(blank=True, null=True)
+    image = models.ImageField(upload_to='images/')
 
 
 class Image(models.Model):

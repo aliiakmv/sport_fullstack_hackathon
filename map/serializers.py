@@ -1,7 +1,7 @@
 from django.db.models import Avg
 from rest_framework import serializers
 import geocoder
-from .models import Category, Section, Image, Poster
+from .models import Category, Section, Image, Poster, ParsingGym
 from decouple import config
 
 
@@ -46,4 +46,10 @@ class SectionSerializer(serializers.ModelSerializer):
 class PosterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Poster
+        fields = '__all__'
+
+class ParsingGymSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ParsingGym
         fields = '__all__'
