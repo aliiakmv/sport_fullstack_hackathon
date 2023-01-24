@@ -13,3 +13,13 @@ loguru
 coverage
 model_bakery
 geocoder
+selenium
+requests
+webdriver_manager
+fake-useragent
+bs4
+lxml
+social-auth-app-django
+channels
+channels-redis
+django-allauth
