@@ -20,3 +20,17 @@ lxml
 selenium
 webdriver_manager
 fake-useragent
+geopy
+
+
+
+
+[program:celery]
+command=/home/aliyakomanovaa/sport_fullstack_hackathon/venv/bin/celery -A config beat --loglevel=INFO
+directory=/home/aliyakomanovaa/sport_fullstack_hackathon
+user=www-data
+startsecs=0
+autostart=true
+autorestart=true
+stdout_logfile=/home/aliyakomanovaa/sport_fullstack_hackathon/logs/celeryd.log
+redirect_stderr=true

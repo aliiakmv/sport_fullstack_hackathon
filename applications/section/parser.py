@@ -1,5 +1,5 @@
-from decouple import config
-from django.contrib.auth import get_user_model
+import time
+
 from fake_useragent import UserAgent
 from selenium import webdriver
 from selenium.webdriver import ActionChains, Keys
@@ -10,6 +10,8 @@ from bs4 import BeautifulSoup as Bs
 
 from applications.section.models import ParsingGym
 
+from geopy.geocoders import Nominatim
+
 
 options = webdriver.ChromeOptions()
 ua = UserAgent()
@@ -17,6 +19,8 @@ options.add_argument('--headless')
 options.add_argument(f'user-agent={ua.chrome}')
 options.add_argument('--disable-blink-features=AutomationControlled')
 
+
+geolocator = Nominatim(user_agent='Gym')
 
 def get_sports_sections_html(url):
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
@@ -32,24 +36,19 @@ def get_sports_sections_html(url):
 
         courses_list = driver.find_elements(By.CLASS_NAME, value='Nv2PK')
         if last_review == courses_list[-1]:
-            print(driver.page_source)
             return driver.page_source
-
-def get_coordinates(url):
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-    driver.get(url)
-    zoom_css = 'div.mLuXec-control-zoom-out'
-    return driver.find_elements_by_css_sector(zoom_css).click()
 
 
 def get_soup(html):
     soup = Bs(html, 'lxml')
     return soup
 
+
 def get_data(soup):
+    time.sleep(1)
     sport_list = soup.find_all('div', class_='Nv2PK')
     data = []
-    for sport in sport_list[:20]:
+    for sport in sport_list[:30]:
         try:
             image = sport.find('div', class_='FQ2IWe p0Hhde').find('img').get('src')
         except AttributeError:
@@ -64,10 +63,9 @@ def get_data(soup):
             title = ''
             address = ''
         try:
-            #class_all = sport.find_all('div', {'class': 'Hk4XGb'})
-            coordinates = sport.find('div', {'class': 'Hk4XGb', 'jstcache': 0}).find('div', {'class': 'mLuXec'})
-            print(coordinates)
+            location = geolocator.geocode(address)
+            coordinates = (location.latitude, location.longitude)
         except AttributeError:
-            coordinates = ' '
+            coordinates = '0'
         data.append(ParsingGym(title=title, address=address, coordinates=coordinates, image=image))
     return data

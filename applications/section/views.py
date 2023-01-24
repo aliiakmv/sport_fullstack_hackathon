@@ -12,6 +12,7 @@ from applications.feedback.models import Rating, Like
 from applications.feedback.serializers import RatingSerializer
 from applications.section.models import Section, Poster, Category, ParsingGym
 from applications.section.permission import IsOwner
+from applications.section.section_recommendations_mixin import RecommendationMixin
 from applications.section.serializers import SectionSerializer, PosterSerializer, CategorySerializer, \
     ParsingGymSerializer
 from django_filters.rest_framework import DjangoFilterBackend
@@ -29,7 +30,7 @@ class LargeResultsSetPagination(PageNumberPagination):
 
 
 @method_decorator(cache_page(60), name='dispatch')
-class SectionAPIView(ModelViewSet):
+class SectionAPIView(RecommendationMixin, ModelViewSet):
     logger.info('section')
     queryset = Section.objects.all()
     serializer_class = SectionSerializer

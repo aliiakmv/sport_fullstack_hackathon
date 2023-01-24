@@ -12,4 +12,3 @@ def save_data_to_db():
     soup = get_soup(html)
     data = get_data(soup)
     ParsingGym.objects.bulk_create(data)
-
