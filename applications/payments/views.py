@@ -36,7 +36,7 @@ class SubscriptionOfferViewSet(APIView):
     @staticmethod
     def get(request, subscription_key):
         subscription = get_object_or_404(Subscription, subscription_key=subscription_key)
-        customer = get_object_or_404(Customer, email=request.user.email)
+        customer = Customer.objects.filter(user=subscription.customer)[0]
 
         if customer.card_balance < subscription.final_price:
             return Response({'message': 'There is not enough money on your card'}, status=status.HTTP_400_BAD_REQUEST)

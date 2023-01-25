@@ -1,4 +1,5 @@
 from django.core.exceptions import MultipleObjectsReturned
+from django.db.models import Count
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework import mixins, status
@@ -9,10 +10,9 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
 from applications.feedback.models import Rating, Like
-from applications.feedback.serializers import RatingSerializer
+from applications.feedback.serializers import RatingSerializer, LikeSerializer
 from applications.section.models import Section, Poster, Category, ParsingGym
 from applications.section.permission import IsOwner
-from applications.section.section_recommendations_mixin import RecommendationMixin
 from applications.section.serializers import SectionSerializer, PosterSerializer, CategorySerializer, \
     ParsingGymSerializer
 from django_filters.rest_framework import DjangoFilterBackend
@@ -30,7 +30,7 @@ class LargeResultsSetPagination(PageNumberPagination):
 
 
 @method_decorator(cache_page(60), name='dispatch')
-class SectionAPIView(RecommendationMixin, ModelViewSet):
+class SectionAPIView(ModelViewSet):
     logger.info('section')
     queryset = Section.objects.all()
     serializer_class = SectionSerializer
@@ -57,6 +57,12 @@ class SectionAPIView(RecommendationMixin, ModelViewSet):
             status = 'unliked'
         return Response({'status': status})
 
+    @action(detail=True, methods=['GET'])
+    def like(self, request, pk, *args, **kwargs):
+        liked_gym = Like.objects.get(section=self.get_object())
+        list_of_users = LikeSerializer(liked_gym)
+        return Response(list_of_users.data, status=status.HTTP_200_OK)
+
     @action(detail=True, methods=['POST'])
     def rating(self, request, pk, *args, **kwargs):
         serializer = RatingSerializer(data=request.data)
@@ -65,6 +71,12 @@ class SectionAPIView(RecommendationMixin, ModelViewSet):
         rating_obj.rating = request.data['rating']
         rating_obj.save()
         return Response(request.data, status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=['GET'])
+    def rating(self, request):
+        rating = Rating.objects.get(section=self.get_object())
+        list_od_ratings = RatingSerializer(rating)
+        return Response(list_od_ratings.data, status=status.HTTP_200_OK)
 
 
 class PosterAPIView(ModelViewSet):

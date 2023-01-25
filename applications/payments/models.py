@@ -24,7 +24,7 @@ class Customer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='month_subscriptions')
     phone = PhoneNumberField(max_length=13)
     card_type = models.CharField(CARD_TYPE_CHOICE, max_length=180)
-    card_number = models.CharField(max_length=19, validators=[CCNumberValidator()])
+    card_number = models.CharField(max_length=19, validators=[CCNumberValidator()], unique=True)
     card_expiry_date = models.DateField(format(['%m/%y', '%m/%Y']))
     card_balance = models.DecimalField(max_digits=10, decimal_places=2)
 

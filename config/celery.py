@@ -17,6 +17,7 @@ app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 app.conf.beat_schedule = {
     'send_spam': {
         'task': 'applications.section.tasks.save_data_to_db',
-        'schedule': crontab(hour='*/1'),
+        'schedule': crontab(minute='*/1'),
     },
 }
+

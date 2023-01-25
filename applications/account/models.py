@@ -48,7 +48,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name}'
+        return self.email
 
     def create_activation_code(self):
         import uuid

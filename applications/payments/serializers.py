@@ -33,7 +33,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def create(validated_data):
-        subscription = Subscription.objects.create(**validated_data)
+        subscription = Subscription.objects.create( **validated_data)
         send_subscription_key_email.delay(email=subscription.customer.email, money=subscription.classes.price,
                                           subscription_key=subscription.subscription_key)
         return subscription

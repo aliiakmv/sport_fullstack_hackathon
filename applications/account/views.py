@@ -42,7 +42,6 @@ class ForgotPasswordApiView(APIView):
     def post(self, request):
         serializer = ForgotPasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.send_code()
         return Response('You have received a recovery code')
 
 
@@ -50,5 +49,4 @@ class ForgotPasswordCompleteApiView(APIView):
     def post(self, request):
         serializer = ForgotPasswordCompleteSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.set_new_password()
         return Response('Your password has been successfully updated')
