@@ -1,3 +1,5 @@
+import geocoder
+from decouple import config
 from django.contrib.auth import get_user_model
 from django.db import models
 
@@ -19,6 +21,19 @@ class Section(models.Model):
     address = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='sections')
+    lat = models.FloatField(blank=True, null=True)
+    long = models.FloatField(blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        try:
+            g = geocoder.mapbox(self.address, key=config('TOKEN'))
+            g = g.latlng
+            self.lat = g[0]
+            self.long = g[1]
+        except TypeError:
+            self.lat = 0
+            self.long = 0
+        return super().save(*args, **kwargs)
 
     def __str__(self):
         return f'Section: {self.title} Category: {self.category}'

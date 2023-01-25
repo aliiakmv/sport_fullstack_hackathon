@@ -4,7 +4,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework import mixins, status
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAdminUser, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
@@ -34,7 +34,7 @@ class SectionAPIView(ModelViewSet):
     logger.info('section')
     queryset = Section.objects.all()
     serializer_class = SectionSerializer
-    permission_classes = [IsOwner]
+    permission_classes = [AllowAny]
     pagination_class = LargeResultsSetPagination
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ['category', 'price']

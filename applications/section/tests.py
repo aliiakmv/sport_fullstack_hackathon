@@ -88,7 +88,7 @@ class SectionTest(APITestCase):
             'category': Category.objects.first().title,
             'title': 'test_post',
             'price': 20,
-            'address': 'test',
+            'address': '10 мкр, 34 дом',
             'description': 'test',
             'images': image
         }
