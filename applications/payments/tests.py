@@ -36,7 +36,7 @@ class SubscribeAPITestCase(APITestCase):
                                 card_expiry_date='2024-01-03', card_balance=10000)
 
     def setup_user_token(self):
-        response = self.client.post('/api/v1/account/login/',
+        response = self.client.post('/api/v1/accounts/login/',
                                     {'email': 'customer@gmail.com', 'password': 'clouds22'})
         content = json.loads(response.content)
         return content['access']

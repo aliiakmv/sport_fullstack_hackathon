@@ -31,11 +31,17 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'django_celery_beat',
     'corsheaders',
+    'django.contrib.sites',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.github',
+    'allauth.socialaccount.providers.facebook',
 
     # apps
-    'applications.account',
+    'applications.accounts',
     'applications.section',
-    'applications.map',
     'applications.payments',
     'applications.feedback'
 ]
@@ -65,6 +71,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                'django.template.context_processors.request',
             ],
         },
     },
@@ -112,7 +120,7 @@ MEDIA_ROOT = BASE_DIR / 'media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'account.User'
+AUTH_USER_MODEL = 'accounts.User'
 
 
 SWAGGER_SETTINGS = {
@@ -124,6 +132,12 @@ SWAGGER_SETTINGS = {
         }
     }
 }
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+
+    'allauth.accounts.auth_backends.AuthenticationBackend',
+)
 
 
 REST_FRAMEWORK = {

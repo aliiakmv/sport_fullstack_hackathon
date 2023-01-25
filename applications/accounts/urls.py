@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from applications.account.views import RegisterApiView, ActivationApiView, ChangePasswordApiView, ForgotPasswordCompleteApiView, \
+from applications.accounts.views import RegisterApiView, ActivationApiView, ChangePasswordApiView, ForgotPasswordCompleteApiView, \
     ForgotPasswordApiView
 
 urlpatterns = [
