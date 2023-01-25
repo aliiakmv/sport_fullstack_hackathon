@@ -43,6 +43,7 @@ class Review(models.Model):
 class Favorite(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favorites')
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='favorites')
+    is_favorite = models.BooleanField(default=False)
 
     def __str__(self):
         return self.owner

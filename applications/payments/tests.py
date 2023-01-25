@@ -11,7 +11,7 @@ from model_bakery import baker
 
 from django.contrib.auth import get_user_model
 
-from applications.payments.models import Customer
+from applications.payments.models import Customer, Subscription
 from applications.payments.views import SubscriptionOfferViewSet
 from applications.section.models import Section, Category
 from applications.section.views import SectionAPIView
@@ -23,7 +23,7 @@ class SubscribeAPITestCase(APITestCase):
     """Тестирование представлений абонемента"""
     def setUp(self) -> None:
         self.client = APIClient()
-        self.user = User.objects.create_superuser('customer@gmail.com', 'clouds22')
+        self.user = User.objects.create_superuser(email='customer@gmail.com', password='clouds22')
         self.user .save()
         self.access_token = self.setup_user_token()
         self.customer = self.setup_customer()
@@ -32,7 +32,7 @@ class SubscribeAPITestCase(APITestCase):
         self.section.save()
 
     def setup_customer(self):
-        return Customer.objects.create(user=self.user, phone='0555001090', card_number='4485818557975555', card_type='visa',
+        return Customer.objects.create(user=self.user, phone='+996555001090', card_number='4485818557975555', card_type='visa',
                                 card_expiry_date='2024-01-03', card_balance=10000)
 
     def setup_user_token(self):
@@ -47,12 +47,25 @@ class SubscribeAPITestCase(APITestCase):
         list_of_sections = baker.make('section.Section', category=test_category, trainer=test_trainer, price=5000)
         return list_of_sections
 
-    def buy_subscription(self):
+    def test_buy_subscription(self):
         new_data = {
             'classes': self.section.id,
-            'customer': self.customer.id,
-            'type': 'visa'
+            'customer': self.user.email,
+            'type': 'year'
         }
         response = self.client.post(reverse('subscriptions-list'), new_data,
+                                    HTTP_AUTHORIZATION=f'Bearer {self.access_token}'.format(token))
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_card(self):
+        new_customer = {
+            'user': self.user.email,
+            'phone': '+996555444222',
+            'card_type': 'visa',
+            'card_number': '75849340745793',
+            'card_expiry_date': '2024-07-07',
+            'card_balance': 5000
+        }
+        response = self.client.post(reverse('profile-list'), new_customer,
                                     HTTP_AUTHORIZATION=f'Bearer {self.access_token}'.format(token))
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)

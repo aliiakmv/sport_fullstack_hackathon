@@ -1,10 +1,9 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from applications.feedback.views import FavoriteAPIView, ReviewAPIView
+from applications.feedback.views import ReviewAPIView
 
 router = DefaultRouter()
-router.register('favorite', FavoriteAPIView)
 router.register('review', ReviewAPIView)
 
 urlpatterns = [

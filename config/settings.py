@@ -136,6 +136,29 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=600),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1), }
 
+SITE_ID = 1
+
+SOCIALACCOUNT_PROVIDERS = {
+    'github': {
+        'APP': {
+            'client_id': config('SOCIAL_AUTH_GITHUB_ID'),
+            'secret': config('SOCIAL_AUTH_GITHUB_SECRET'),
+            'key': ''
+        }
+    },
+    'facebook': {
+        'APP': {
+            'client_id': config('SOCIAL_AUTH_FACEBOOK_ID'),
+            'secret': config('SOCIAL_AUTH_FACEBOOK_SECRET'),
+            'key': ''
+        }
+    }
+}
+
+"""ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'"""
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_PORT = 587

@@ -9,8 +9,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
-from applications.feedback.models import Rating, Like
-from applications.feedback.serializers import RatingSerializer, LikeSerializer
+from applications.feedback.models import Rating, Like, Favorite
+from applications.feedback.serializers import RatingSerializer, LikeSerializer, FavoriteSerializer
 from applications.section.models import Section, Poster, Category, ParsingGym
 from applications.section.permission import IsOwner
 from applications.section.serializers import SectionSerializer, PosterSerializer, CategorySerializer, \
@@ -77,6 +77,22 @@ class SectionAPIView(ModelViewSet):
         rating = Rating.objects.get(section=self.get_object())
         list_od_ratings = RatingSerializer(rating)
         return Response(list_od_ratings.data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['POST'])
+    def favorite(self, request, pk=None):
+        fav_obj, _ = Favorite.objects.get_or_create(section_id=pk, owner=request.user)
+        fav_obj.is_favorite = not fav_obj.is_favorite
+        fav_obj.save()
+        status_ = 'saved in favorites'
+        if not fav_obj.is_in_bookmarks:
+            status_ = 'Removed from favorites'
+        return Response({'status': status_})
+
+    @action(detail=False, methods=['GET'])
+    def get_favorites(self, request):
+        course = Favorite.objects.filter(is_favorite=True, owner=request.user)
+        list_of_courses = FavoriteSerializer(course, many=True)
+        return Response(list_of_courses.data, status=status.HTTP_200_OK)
 
 
 class PosterAPIView(ModelViewSet):
