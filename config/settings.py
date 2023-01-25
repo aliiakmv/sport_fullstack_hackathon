@@ -136,7 +136,7 @@ SWAGGER_SETTINGS = {
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 
-    'allauth.accounts.auth_backends.AuthenticationBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 )
 
 
@@ -169,10 +169,10 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-"""ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_AUTHENTICATION_METHOD = 'email'"""
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_PORT = 587

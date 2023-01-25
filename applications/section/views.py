@@ -45,7 +45,7 @@ class SectionAPIView(ModelViewSet):
         serializer.save(trainer=self.request.user)
 
     @action(detail=True, methods=['POST'])
-    def like(self, request, pk, *args, **kwargs):
+    def like(self, request, pk=None):
         try:
             like_obj, _ = Like.objects.get_or_create(section_id=pk, owner=request.user)
         except MultipleObjectsReturned:
@@ -58,7 +58,7 @@ class SectionAPIView(ModelViewSet):
         return Response({'status': status})
 
     @action(detail=True, methods=['GET'])
-    def like(self, request, pk, *args, **kwargs):
+    def get_like(self, request, pk, *args, **kwargs):
         liked_gym = Like.objects.get(section=self.get_object())
         list_of_users = LikeSerializer(liked_gym)
         return Response(list_of_users.data, status=status.HTTP_200_OK)
@@ -73,7 +73,7 @@ class SectionAPIView(ModelViewSet):
         return Response(request.data, status=status.HTTP_201_CREATED)
 
     @action(detail=True, methods=['GET'])
-    def rating(self, request):
+    def get_rating(self, request):
         rating = Rating.objects.get(section=self.get_object())
         list_od_ratings = RatingSerializer(rating)
         return Response(list_od_ratings.data, status=status.HTTP_200_OK)
@@ -84,7 +84,7 @@ class SectionAPIView(ModelViewSet):
         fav_obj.is_favorite = not fav_obj.is_favorite
         fav_obj.save()
         status_ = 'saved in favorites'
-        if not fav_obj.is_in_bookmarks:
+        if not fav_obj.is_favorite:
             status_ = 'Removed from favorites'
         return Response({'status': status_})
 

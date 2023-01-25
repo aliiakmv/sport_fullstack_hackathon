@@ -3,7 +3,7 @@ from decouple import config
 
 
 def send_activation_email(email, code):
-    full_link = f'http://http://127.0.0.1:8000/api/v1/account/activate/{code}/'
+    full_link = f'http://http://127.0.0.1:8000/api/v1/accounts/activate/{code}/'
     send_mail(
         'Активация пользователя',
         full_link,
